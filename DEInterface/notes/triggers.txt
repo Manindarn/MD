@@ -1,0 +1,125 @@
+common_user_details_after_update
+
+//////////////////////////////////////////////
+CREATE `common_user_details_after_update` AFTER UPDATE ON `common_user_details` FOR EACH ROW BEGIN
+	IF(NEW.`category`="STUDENT") THEN
+		SET @orgToNotPort = (SELECT count(*) FROM `mapping`.`org_not_in_rearch` WHERE `orgID`=NEW.`schoolCode` AND (`classes`="" OR FIND_IN_SET(NEW.`class`, `classes`)));
+	ELSE  
+		SET @orgToNotPort = (SELECT count(*) FROM `mapping`.`org_not_in_rearch` WHERE `orgID`=NEW.`schoolCode`);
+	END IF;
+		IF(@orgToNotPort=0 && (NEW.`MS_userID`!=0 || NEW.`MSE_userID`!=0)) THEN
+			SET @found = (SELECT count(*) FROM `mapping`.`user_management_mapping` WHERE `oldID`=NEW.`id` AND `type`='user');
+			  IF(@found>0)     THEN
+					  UPDATE `mapping`.`user_management_mapping`
+					  SET
+					  `oldUpdatedAt` = NEW.`lastModified`, `oldToNew` ='N' WHERE `oldID` = NEW.`id`;
+			  ELSE
+					INSERT INTO `mapping`.`user_management_mapping`
+						SET
+							`type` = 'user',
+							`oldDB` = 'educatio_educat',
+							`oldTable` = 'common_user_details',
+							`oldIDName` = 'id',
+	                  `oldID` = NEW.`id`,
+							`oldUpdatedAt` = NEW.`lastModified`, 
+							`oldToNew` ='N';
+			  END IF;
+		END IF;
+END
+
+////////////////////////////////
+CREATE TRIGGER `schools_after_insert` AFTER INSERT ON `schools` FOR EACH ROW BEGIN
+		INSERT INTO `mapping`.`user_management_mapping`
+		SET
+			`type` = 'organization',
+			`oldDB` = 'educatio_educat',
+			`oldTable` = 'schools',
+			`oldIDName` = 'schoolno',
+			`oldID` = NEW.`schoolno`,
+			`oldUpdatedAt` = NEW.`modified_at`, 
+			`oldToNew` ='N';
+END
+
+//////////////////////////////////////
+schools_after_update:
+
+CREATE  TRIGGER `schools_after_update` AFTER UPDATE ON `schools` FOR EACH ROW BEGIN
+ IF (@TRIGGER_CHECKS != FALSE) THEN
+	SET @orgToNotPort = (SELECT count(*) FROM `mapping`.`org_not_in_rearch` WHERE `orgID`=NEW.`schoolno`);
+			IF(@orgToNotPort=0)	THEN
+				SET @found = (SELECT count(*) FROM `mapping`.`user_management_mapping` WHERE `oldID`=NEW.`schoolno` AND `type` ='organization');
+				  IF(@found>0)     THEN
+						  UPDATE `mapping`.`user_management_mapping`
+						  SET
+						  `oldUpdatedAt` = NEW.`modified_at`, `oldToNew` ='N' WHERE `oldID` = NEW.`schoolno`;
+				  ELSE
+						INSERT INTO `mapping`.`user_management_mapping`
+							SET
+								`type` = 'organization',
+								`oldDB` = 'educatio_educat',
+								`oldTable` = 'schools',
+								`oldIDName` = 'schoolno',
+								`oldID` = NEW.`schoolno`,
+								`oldUpdatedAt` = NEW.`modified_at`, 
+								`oldToNew` ='N';
+				  END IF;
+			END IF;
+	END IF;
+END
+////////////////////////////////
+
+adepts_teacherclassmapping_after_insert:
+
+CREATE TRIGGER `adepts_teacherclassmapping_after_insert` AFTER INSERT ON `adepts_teacherclassmapping` FOR EACH ROW BEGIN
+	SET @commonID = (SELECT id FROM `educatio_educat`.`common_user_details` WHERE `MS_userID`=NEW.`userID`);
+	IF(@commonID) THEN
+		SET @found = (SELECT count(*) FROM `mapping`.`user_management_mapping` WHERE `oldID`= @commonID AND `type`='user');
+		  IF(@found>0)     THEN
+				  UPDATE `mapping`.`user_management_mapping`
+				  SET
+				  `oldUpdatedAt` = NEW.`lastModified`, `oldToNew` ='N' WHERE `oldID` = @commonID AND `type`='user' ;
+		  ELSE
+				INSERT INTO `mapping`.`user_management_mapping`
+					SET
+						`type` = 'user',
+						`oldDB` = 'educatio_educat',
+						`oldTable` = 'common_user_details',
+						`oldIDName` = 'id',
+                  `oldID` = @commonID,
+						`oldUpdatedAt` = NEW.`lastModified`, 
+						`oldToNew` ='N';
+		  END IF;
+	END IF;
+END
+/////////////////////////
+
+
+/////////////user_management_mapping update////////////////////////
+BEGIN
+ IF ((NEW.oldUpdatedAt > OLD.oldUpdatedAt) OR (NEW.newUpdatedAt <> OLD.newUpdatedAt)) THEN  
+            SET @result = sys_exec(CONCAT('php D:\\VirtualDomain\\MappingPorter\\trigger.php ',NEW.id));
+        END IF;
+END
+
+/////////////end user_management_mapping update////////////////////////
+
+
+
+///////////////////////////////////
+
+CREATE DEFINER=`root`@`localhost` TRIGGER `user_management_mapping_after_update` AFTER UPDATE ON `user_management_mapping` FOR EACH ROW BEGIN
+ IF ((NEW.oldUpdatedAt > OLD.oldUpdatedAt) OR (NEW.newUpdatedAt <> OLD.newUpdatedAt)) THEN  
+            SET @result = sys_exec(CONCAT('php D:\\VirtualDomain\\UMPort\\trigger.php ',NEW.id));
+        END IF;
+END
+/////////////////////////////////////////////////
+CREATE DEFINER=`root`@`localhost` TRIGGER `user_management_mapping_after_insert` AFTER INSERT ON `user_management_mapping` FOR EACH ROW BEGIN
+            SET @result = sys_exec(CONCAT('php D:\\VirtualDomain\\UMPort\\trigger.php ',NEW.id));
+END
+//////////////////////////////////////////
+
+
+
+
+INSERT INTO mapping.org_not_in_rearch ( orgID, schoolName )
+SELECT schoolno, schoolname FROM educatio_educat.schools s;

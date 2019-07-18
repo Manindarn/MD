@@ -1,0 +1,227 @@
+ {
+     "MySQL": {
+         "host": "13.251.143.110",
+         "userName": "techm2",
+         "password": "techmsGER5c4ZqjuSZ597",
+         "DefaultDB": "educatio_educat"
+     },
+     "MongoDB": {
+         "host": "49.204.92.14",
+         "username": null,
+         "password": null,
+         "DefaultDB": "UserManagement"
+     },
+     "ElasticSearch": {
+        "host": "49.204.92.14",
+        "offline" : true
+    },
+     "constants": {
+         "DATETIME_FORMAT": "Y-m-d H:i:s",
+         "DATE_FORMAT": "Y-m-d",
+         "MONGO_DATA_SOURCE": "MongoTestDB",
+         "USER_MANAGEMENT_DB": "UserManagement",
+         "USER_AUTHENTICATION_DB": "UserAuthentication",
+         "PORTING_DB": "Porting",
+         "PEDAGOGY_DB": "PedagogyService",
+         "MAPPING_DB": "mapping",
+         "UM_MAPPING_TABLE": "user_management_mapping",
+         "ORG_NOT_IN_REARCH_TABLE": "org_not_in_rearch",
+         "OFFLINE_SCHOOLS_TABLE": "adepts_offlineSchools",
+         "SETTINGS_TABLE": "userInterfaceSettings",
+         "OFFLINE_SYNC": true,
+         "SYNC_SERVICE_DB": "SyncService",
+         "ACCESS_CODE": "ei-india",
+         "SYNC_DATATYPE": "MongoTestDB",
+         "AWS_ACCESS_KEY": "AKIAJ4MDXOK3NBCXQZZA",
+         "AWS_SECRET_KEY": "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"
+     },
+     "dateTimeFormat": "Y-m-d H:i:s",
+     "dateFormat": "Y-m-d",
+     "porting": {
+         "orgType": "individual",
+         "retailOrgName": "Mindspark Retail",
+         "retailOrgID": "5c2c77f4da9156184c000374",
+         "countryCode": "+91",
+         "defaultPID": "Mindspark",
+         "defaultMathPID": "Mindspark",
+         "defaultEnglighPID": "MSE",
+         "orgTeacherGroup": "organizationTeacher",
+         "sectionType": "section",
+         "settingType": "organization",
+         "PIDSubjectWise": {
+             "1": "MSE",
+             "2": "Mindspark"
+         },
+         "batch": {
+             "name": "2018-2019",
+             "tag": "academic",
+             "startDate": "2018-01-15",
+             "endDate": "2018-10-04"
+         },
+         "order": {
+             "orderType": "regular"
+         },
+         "activeGrades": [],
+         "activeSections": [],
+         "userEndDate": "NOW()",
+         "teacherUsers": [],
+         "lowerGradeUpperLimit": 3,
+         "challengeQuestionLowerLimit": 3,
+         "tagsAndSettings": {
+             "all": "all",
+             "admin": "admin",
+             "teacher": ["themeTeacher1", "textPassword", "School"],
+             "studentLower": ["themeStudentLowerGrade", "School", "picturePassword", "SDLAdaptiveLowerGrades"],
+             "studentHigher": ["themeStudentHigherGrade", "School", "textPassword"],
+             "challengeQuestion": ["challengeQuestions"],
+             "lowerGradeUpperLimit": 3,
+             "challengeQuestionLowerLimit": 3,
+             "settingsLower": {
+                 "theme": "lowergrade"
+             },
+             "settingsHigher": {
+                 "theme": "highergrade"
+             },
+             "settingsTeacher": {
+                 "theme": "themeTeacher"
+             }
+         },
+         "role": {
+             "admin": "schoolAdmin",
+             "teacher": "classTeacher",
+             "student": "regularStudent"
+         },
+         "allowedSettings": ["curriculum", "deactivatedTopicsAtHome", "sessionDuration"]
+     },
+     "mapping": {
+         "mappingDBName": "mapping",
+         "mappingTableName": "user_management_mapping",
+         "tableMappings": {
+             "organization": {
+                 "mongo": {
+                     "DB": "UserManagement",
+                     "table": "Organizations",
+                     "oldIDFieldName": "oldOrgID",
+                     "IDName": "orgID",
+                     "lastUpdatedAtFieldName": "updatedAt"
+                 },
+                 "mysql": {
+                     "DB": "educatio_educat",
+                     "table": "schools",
+                     "IDName": "schoolno",
+                     "lastUpdatedAtFieldName": "modified_at"
+                 }
+             },
+             "order": [{
+                 "mongo": {
+                     "DB": "UserManagement",
+                     "table": "Order",
+                     "oldIDFieldName": "oldOrderID",
+                     "IDName": "orderID",
+                     "lastUpdatedAtFieldName": "updatedAt"
+                 },
+                 "mysql": {
+                     "DB": "educatio_educat",
+                     "table": "ms_ordermaster",
+                     "IDName": "order_id",
+                     "lastUpdatedAtFieldName": "last_modified"
+                 }
+             }, {
+                 "mongo": {
+                     "DB": "UserManagement",
+                     "table": "Order",
+                     "oldIDFieldName": "oldOrderID",
+                     "IDName": "orderID",
+                     "lastUpdatedAtFieldName": "updatedAt"
+                 },
+                 "mysql": {
+                     "DB": "educatio_educat",
+                     "table": "mseng_ordermaster",
+                     "IDName": "order_id",
+                     "lastUpdatedAtFieldName": "last_modified"
+                 }
+             }],
+             "user": {
+                 "mongo": {
+                     "DB": "UserManagement",
+                     "table": "UserDetails",
+                     "oldIDFieldName": "oldUserID",
+                     "IDName": "UID",
+                     "lastUpdatedAtFieldName": "updatedAt"
+                 },
+                 "mysql": {
+                     "DB": "educatio_educat",
+                     "table": "common_user_details",
+                     "IDName": "id",
+                     "lastUpdatedAtFieldName": "lastModified"
+                 }
+             },
+             "userProduct": [{
+                 "mongo": {
+                     "DB": "UserManagement",
+                     "table": "UserProducts",
+                     "oldIDFieldName": "oldUPID",
+                     "IDName": "UPID",
+                     "lastUpdatedAtFieldName": "updatedAt"
+                 },
+                 "mysql": {
+                     "DB": "educatio_educat",
+                     "table": "common_user_details",
+                     "IDName": "MS_userID",
+                     "lastUpdatedAtFieldName": "lastModified"
+                 }
+             }, {
+                 "mongo": {
+                     "DB": "UserManagement",
+                     "table": "UserProducts",
+                     "oldIDFieldName": "oldUPID",
+                     "IDName": "UPID",
+                     "lastUpdatedAtFieldName": "updatedAt"
+                 },
+                 "mysql": {
+                     "DB": "educatio_educat",
+                     "table": "common_user_details",
+                     "IDName": "MSE_userID",
+                     "lastUpdatedAtFieldName": "lastModified"
+                 }
+             }]
+         }
+     },
+     "class_upgrade": {
+        "CreateBatch": "localhost/Mindspark/Framework/Mindspark/UserManagement/CreateBatch",
+        "UAClassUpgrade": "localhost/Mindspark/Framework/Mindspark/UserAuthentication/ClassUpgrade",
+        "CSClassUpgrade": "localhost/Mindspark/Framework/Mindspark/CommunicationService/ClassUpgrade",
+        "NSClassUpgrade": "localhost/Mindspark/Framework/Mindspark/NotificationService/ClassUpgrade",
+        "RSClassUpgrade": "localhost/Mindspark/Framework/Mindspark/ReportingService/ClassUpgrade",
+        "PSClassUpgrade": "localhost/Mindspark/Framework/Mindspark/PedagogyService/ClassUpgrade",
+        "REClassUpgrade": "localhost/Mindspark/Framework/Mindspark/RewardEngine/ClassUpgrade",
+        "GetAllOrder": "localhost/Mindspark/Framework/Mindspark/UserManagement/GetAllOrder"
+     },
+     "elastic_search": {
+         "user_attempt":{
+            "Database": "user_attempt_index",
+            "Collection": "user_attempt",
+            "Key": "userId"
+         },
+         "user_module_progress":{
+            "Database": "user_module_progress_index",
+            "Collection": "user_module_progress",
+            "Key": "userId"
+         },
+         "user_session_log":{
+            "Database": "user_session_log_index",
+            "Collection": "user_session_log",
+            "Key": "userId"
+         },
+         "activity_details":{
+            "Database": "activity_details_index",
+            "Collection": "activity_details",
+            "Key": "userId"
+         },
+         "user_api_log":{
+            "Database": "user_api_log_index",
+            "Collection": "user_api_log",
+            "Key": "userId"
+         }
+     }
+ }
